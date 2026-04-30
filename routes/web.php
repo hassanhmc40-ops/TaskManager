@@ -4,13 +4,21 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth')->group(function () {
     // ── Profile ──────────────────────────────────────────────
@@ -25,5 +33,12 @@ Route::middleware('auth')->group(function () {
     // Standard resource routes (index, create, store, show, edit, update, destroy)
     Route::resource('tasks', TaskController::class);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+| Loaded from routes/auth.php (Breeze)
+*/
 
 require __DIR__.'/auth.php';
