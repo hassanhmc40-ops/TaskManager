@@ -76,7 +76,7 @@ class TaskController extends Controller
     /**
      * Update the specified task in storage.
      */
-    public function update(Reque $task)
+    public function update(Request $request, Task $task)
     {
         if ($task->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
