@@ -1,55 +1,73 @@
-<section class="space-y-6">
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Delete Account') }}
-        </h2>
+<div class="tm-card" style="padding:1.75rem;border-color:#FECACA;">
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
-        </p>
-    </header>
-
-    <x-danger-button
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Delete Account') }}</x-danger-button>
-
-    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-        <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
-            @csrf
-            @method('delete')
-
-            <h2 class="text-lg font-medium text-gray-900">
-                {{ __('Are you sure you want to delete your account?') }}
+    {{-- Section header --}}
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;
+                padding-bottom:1.25rem;border-bottom:1px solid #FECACA;">
+        <div style="width:38px;height:38px;background:var(--color-danger-bg);border-radius:10px;
+                    display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24"
+                 stroke="var(--color-danger)" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+        </div>
+        <div>
+            <h2 style="font-size:1rem;font-weight:700;color:var(--color-danger);margin:0 0 0.15rem;">
+                Delete Account
             </h2>
-
-            <p class="mt-1 text-sm text-gray-600">
-                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+            <p style="font-size:0.8rem;color:var(--color-gray-500);margin:0;">
+                Permanently remove your account and all associated data.
             </p>
+        </div>
+    </div>
 
-            <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
+    {{-- Warning notice --}}
+    <div style="background:var(--color-danger-bg);border:1px solid #FECACA;border-radius:10px;
+                padding:1rem 1.1rem;margin-bottom:1.5rem;
+                display:flex;align-items:flex-start;gap:0.65rem;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"
+             stroke="var(--color-danger)" stroke-width="2" style="flex-shrink:0;margin-top:1px;">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+        </svg>
+        <p style="font-size:0.82rem;color:var(--color-danger);margin:0;line-height:1.6;">
+            Once your account is deleted, <strong>all of its resources and data will be permanently removed</strong>.
+            Please download any data you wish to retain before proceeding.
+        </p>
+    </div>
 
-                <x-text-input
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="mt-1 block w-3/4"
-                    placeholder="{{ __('Password') }}"
-                />
+    {{-- What will be deleted checklist --}}
+    <div style="margin-bottom:1.75rem;">
+        <p style="font-size:0.8rem;font-weight:600;color:var(--color-gray-600);margin:0 0 0.6rem;">
+            The following will be permanently deleted:
+        </p>
+        @foreach(['Your profile and account credentials', 'All tasks you have created', 'Your category associations', 'All activity history'] as $item)
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;">
+            <svg width="13" height="13" fill="none" viewBox="0 0 24 24"
+                 stroke="var(--color-danger)" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+            <span style="font-size:0.82rem;color:var(--color-gray-600);">{{ $item }}</span>
+        </div>
+        @endforeach
+    </div>
 
-                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
-            </div>
+    {{-- Delete trigger button --}}
+    <button type="button"
+            id="btn-open-delete-modal"
+            onclick="openDeleteModal()"
+            style="display:inline-flex;align-items:center;gap:0.5rem;
+                   background:var(--color-danger);color:#fff;font-weight:600;
+                   font-size:0.875rem;padding:0.6rem 1.25rem;border-radius:8px;
+                   border:none;cursor:pointer;transition:background .15s,transform .1s;"
+            onmouseover="this.style.background='#B91C1C'"
+            onmouseout="this.style.background='var(--color-danger)'">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        </svg>
+        Delete My Account
+    </button>
 
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
-                    {{ __('Cancel') }}
-                </x-secondary-button>
-
-                <x-danger-button class="ms-3">
-                    {{ __('Delete Account') }}
-                </x-danger-button>
-            </div>
-        </form>
-    </x-modal>
-</section>
+</div>
