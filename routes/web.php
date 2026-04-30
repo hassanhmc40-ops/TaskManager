@@ -20,24 +20,18 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    
-    // Dashboard - redirect to tasks
-    Route::get('/dashboard', function () {
-        return redirect()->route('tasks.index');
-    })->name('dashboard');
-    
-    // Profile routes (from Breeze)
+Route::middleware('auth')->group(function () {
+    // ── Profile ──────────────────────────────────────────────
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-    // Task CRUD routes
+
+    // ── Tasks ─────────────────────────────────────────────────
+    // Custom route BEFORE resource so it is resolved first
+    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
+
+    // Standard resource routes (index, create, store, show, edit, update, destroy)
     Route::resource('tasks', TaskController::class);
-    
-    // Custom route: Quick status update
-    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])
-        ->name('tasks.updateStatus');
 });
 
 /*

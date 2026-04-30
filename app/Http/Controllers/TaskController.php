@@ -40,6 +40,20 @@ class TaskController extends Controller
     }
 
     /**
+     * Display the specified task.
+     */
+    public function show(Task $task)
+    {
+        if ($task->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $task->load('category', 'user');
+
+        return view('tasks.show', compact('task'));
+    }
+
+    /**
      * Store a newly created task in storage.
      */
     public function store(Request $request)
